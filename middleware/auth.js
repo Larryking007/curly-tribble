@@ -12,6 +12,7 @@ module.exports = (req, res, next) => {
       .status(401)
       .json({ statusCode: 401, message: "No token, authorization denied" 
     });
+    // 
 
     // else... token exists
     try {
