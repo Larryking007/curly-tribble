@@ -21,7 +21,6 @@ const { seedAdmin } = require("./seeders/admin");
 connectDB();
 const initRoutes = require("./routes/routes");
 app.use(cors());
-app.set("view engine", "ejs");
 app.use(express.json());
 app.use(
   require("express-session")({

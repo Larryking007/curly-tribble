@@ -24,6 +24,9 @@ router.post("/login", [
     check('password').not().isEmpty(),
 ], validate, Auth.login);
 
+router.get("/logout", (req,res) => {
+    return res.status(200).render('logout', {err:null})
+})
 
 //EMAIL Verification
 router.get('/verify/:token', Auth.verify);
