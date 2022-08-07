@@ -1,7 +1,6 @@
-const User = require("../models/User");
-const { validatioResult } = require("express-validator");
+const User = require("../models/user");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 require("dotenv").config();
 const { SECRET } = process.env;
 
@@ -22,7 +21,7 @@ exports.getLoggedInUser = async (req, res) => {
   } catch (error) {
     console.error(err.message);
     res.status(500).send("Internal Server Error")
-k  }
+    }
 };
 
 // @route POST api/auth/login

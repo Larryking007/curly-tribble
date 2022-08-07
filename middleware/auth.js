@@ -1,32 +1,44 @@
 const jwt = require("jsonwebtoken");
-require ('dotenv').config();
+require("dotenv").config();
 const { SECRET } = process.env;
 
 module.exports = (req, res, next) => {
-  // Get token from header
-  const token = req.header("x-auth-token");
-
-  // check if token doesn't exist
-  if (!token)
+  // check if there is an authorization token
+  if (!req.headers.authorization) {
+    return res.status(401).json({
+      message: "authorization header required",
+    });
+  }
+  let splittedHeader = req.headers.authorization.split(" ");
+  console.log(splittedHeader);
+  if (splittedHeader[0] !== "Bearer") {
     return res
       .status(401)
-      .json({ statusCode: 401, message: "No token, authorization denied" 
-    });
-    // 
-
-    // else... token exists
-    try {
-        const decoded = jwt.verify(token,SECRET);
-
-        // Assign user to request object
-        req.user = decoded.user;
-
-        next();
-    } catch (error) {
-        res.status(401).json({
-            statusCode: 401,
-            message: "Token is not valid!"
-        });
-        
+      .json({ message: "authorization format is Bearer <token>" });
+  }
+  let token = splittedHeader[1];
+  // decode token
+  jwt.verify(token, SECRET, (err, decodedToken) => {
+    if (err) return res.status(500).json({ err });
+    // check if valid
+    if (!decodedToken) {
+      return res
+        .status(401)
+        .json({ message: "invalid authorization token, Please login" });
     }
+    // allow user to continue with request
+    console.log(decodedToken);
+    req.user = decodedToken;
+    next();
+  });
+};
+
+exports.checkIfAdmin = (req, res, next) => {
+  if (req.user.role !== admin) {
+    return res
+      .status(401)
+      .json({ 
+        message: "this route is restricted to admin users" });
+  }
+  next();
 };
